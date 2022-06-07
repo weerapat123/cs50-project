@@ -5,6 +5,10 @@ import urllib.parse
 from flask import redirect, render_template, request, session
 from functools import wraps
 
+import re
+
+PATTERN = "^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&;:])[A-Za-z\d@$!%*#?&;:]{8,}$"
+
 
 def apology(message, code=400):
     """Render message as an apology to user."""
@@ -74,3 +78,11 @@ def lookup(symbol):
 def usd(value):
     """Format value as USD."""
     return f"${value:,.2f}"
+
+
+def is_password_valid(password: str):
+    """Check if password is valid."""
+    if re.search(PATTERN, password):
+        return True
+
+    return False

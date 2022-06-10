@@ -369,9 +369,11 @@ def download_file(filename):
 @app.route("/list_items")
 @login_required
 def list_items():
-    user_id = session["user_id"]
+
     items = db.execute(
-        f"SELECT * FROM items WHERE owner_id = ? AND status = ?", user_id, ACTIVE
+        f"SELECT * FROM items WHERE owner_id = ? AND status = ?",
+        session["user_id"],
+        ACTIVE,
     )
 
     return render_template("list_items.html", items=items)
@@ -404,6 +406,21 @@ def remove_item():
 
     flash("You have successfully removed an item!")
     return redirect("/list_items")
+
+
+@app.route("/history")
+@login_required
+def history():
+
+    items = db.execute(
+        f"""SELECT htr.process_type, items.name, items.price, items.description, items.image_name, items.category
+        FROM histories AS htr 
+        JOIN items ON items.id = htr.item_id 
+        WHERE owner_id = ?""",
+        session["user_id"],
+    )
+
+    return render_template("history.html", items=items)
 
 
 if __name__ == "__main__":

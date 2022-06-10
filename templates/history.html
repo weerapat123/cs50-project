@@ -10,20 +10,19 @@ Item Lists
         <thead class="table-light">
             <tr>
                 <th>No.</th>
+                <th>Process Type</th>
                 <th>Name</th>
                 <th>Description</th>
                 <th>Price</th>
                 <th>Image</th>
                 <th>Category</th>
-                {% if items %}
-                <th></th>
-                {% endif %}
             </tr>
         </thead>
         <tbody>
             {% for item in items %}
             <tr>
                 <td>{{ loop.index0 + 1 }}</td>
+                <td class="text-capitalize">{{ item.process_type }}</td>
                 <td class="text-start">{{ item.name }}</td>
                 <td class="text-start">{{ item.description }}</td>
                 <td class="text-start">{{ item.price | usd }}</td>
@@ -32,14 +31,6 @@ Item Lists
                         src="{{ url_for('download_file', filename=item.image_name) }}" alt="{{ item.name }}">
                 </td>
                 <td class="text-capitalize">{{ item.category }}</td>
-                <td>
-                    <div class="row g-3 justify-content-center">
-                        <form action="/remove_item" class="col-auto" method="post">
-                            <input name="item_id" type="hidden" value="{{ item.id }}">
-                            <button class="btn btn-danger" type="submit">Remove</button>
-                        </form>
-                    </div>
-                </td>
             </tr>
             {% endfor %}
         </tbody>

@@ -8,6 +8,7 @@ from functools import wraps
 import re
 
 PATTERN = "^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&;:])[A-Za-z\d@$!%*#?&;:]{8,}$"
+ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png"]
 
 
 def apology(message, code=400):
@@ -77,6 +78,9 @@ def lookup(symbol):
 
 def usd(value):
     """Format value as USD."""
+    if value % 1 == 0:
+        return f"${value:,.0f}"
+
     return f"${value:,.2f}"
 
 
@@ -86,3 +90,7 @@ def is_password_valid(password: str):
         return True
 
     return False
+
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS

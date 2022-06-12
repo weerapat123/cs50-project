@@ -100,6 +100,7 @@ def init_db():
         """CREATE TABLE IF NOT EXISTS histories (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     process_type TEXT NOT NULL,
+    process_datetime TEXT NOT NULL,
     item_id INTEGER NOT NULL,
     FOREIGN KEY (item_id) REFERENCES items (id))"""
     )
@@ -176,7 +177,7 @@ def login():
         session["user_id"] = rows[0]["id"]
 
         # Redirect user to home page
-        return redirect("/backoffice")
+        return redirect("/")
 
     # User reached route via GET (as by clicking a link or via redirect)
     return render_template("login.html")
@@ -190,7 +191,7 @@ def logout():
     session.clear()
 
     # Redirect user to login form
-    return redirect("/backoffice")
+    return redirect("/")
 
 
 # TODO: For debug. Remove later. Only manual register needed!
@@ -236,7 +237,7 @@ def register():
             generate_password_hash(password),
         )
 
-        return render_template("register.html", is_registered=True)
+        return redirect("/login")
 
     return render_template("register.html")
 
@@ -293,7 +294,7 @@ def backoffice():
     return render_template("backoffice.html")
 
 
-@app.route("/add_item", methods=["GET", "POST"])
+@app.route("/backoffice/add_item", methods=["GET", "POST"])
 @login_required
 def add_item():
     if request.method == "POST":
@@ -349,8 +350,8 @@ def add_item():
         item_id = rows[0]["id"]
 
         db.execute(
-            """INSERT INTO histories (process_type, item_id)
-            VALUES(?, ?)""",
+            """INSERT INTO histories (process_type, process_datetime, item_id)
+            VALUES(?, datetime('now', 'localtime'), ?)""",
             ADD,
             item_id,
         )
@@ -366,7 +367,7 @@ def download_file(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
 
 
-@app.route("/list_items")
+@app.route("/backoffice/list_items")
 @login_required
 def list_items():
 
@@ -379,7 +380,7 @@ def list_items():
     return render_template("list_items.html", items=items)
 
 
-@app.route("/remove_item", methods=["POST"])
+@app.route("/backoffice/remove_item", methods=["POST"])
 @login_required
 def remove_item():
     user_id = session["user_id"]
@@ -398,8 +399,8 @@ def remove_item():
     db.execute("COMMIT")
 
     db.execute(
-        """INSERT INTO histories (process_type, item_id)
-            VALUES(?, ?)""",
+        """INSERT INTO histories (process_type, process_datetime, item_id)
+            VALUES(?, datetime('now', 'localtime'), ?)""",
         REMOVE,
         item_id,
     )
@@ -408,12 +409,12 @@ def remove_item():
     return redirect("/list_items")
 
 
-@app.route("/history")
+@app.route("/backoffice/history")
 @login_required
 def history():
 
     items = db.execute(
-        f"""SELECT htr.process_type, items.name, items.price, items.description, items.image_name, items.category
+        f"""SELECT htr.process_type, htr.process_datetime, items.name, items.price, items.description, items.image_name, items.category
         FROM histories AS htr 
         JOIN items ON items.id = htr.item_id 
         WHERE owner_id = ?""",

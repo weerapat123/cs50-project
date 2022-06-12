@@ -24,13 +24,12 @@
 </head>
 
 <body>
-
     <nav class="bg-light border navbar navbar-expand-md navbar-light">
         <div class="container-fluid">
-            {% if session["user_id"] %}
-            <a class="navbar-brand" href="/backoffice"><span class="blue">Mo</span><span class="red">nk</span><span
+            {% if session["user_id"] and "/backoffice" in url_for(request.endpoint, **request.view_args) %}
+            <a class="navbar-brand" href="/"><span class="blue">Mo</span><span class="red">nk</span><span
                     class="yellow">e</span><span class="green">y</span> <span class="red">Market</span> <span
-                    class="green">Backoffice</span></a>
+                    class="green"> Backoffice</span></a>
             {% else %}
             <a class="navbar-brand" href="/"><span class="blue">Mo</span><span class="red">nk</span><span
                     class="yellow">e</span><span class="green">y</span> <span class="red">Market</span></a>
@@ -42,25 +41,23 @@
             </button>
             <div class="collapse navbar-collapse" id="navbar">
                 {% if session["user_id"] %}
+                {% if "/backoffice" in url_for(request.endpoint, **request.view_args) %}
                 <ul class="navbar-nav me-auto mt-2">
-                    <li class="nav-item"><a class="nav-link" href="/list_items">List Items</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/add_item">Add Item</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/backoffice/list_items">List Items</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/backoffice/add_item">Add Item</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/backoffice/history">History</a></li>
                 </ul>
-                <ul class="navbar-nav ms-auto mt-2">
-                    <li class="nav-item"><a class="nav-link" href="/change_password">Change Password</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
-                </ul>
-                {% elif url_for(request.endpoint, **request.view_args) == "/login" or url_for(request.endpoint,
-                **request.view_args) == "/register" %}
-                <ul class="navbar-nav ms-auto mt-2">
-                    <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
-                </ul>
-                {% else %}
+                {% endif %}
                 <ul class="navbar-nav ms-auto mt-2">
                     <li class="nav-item"><a class="nav-link" href="/backoffice">Backoffice</a></li>
                     <li class="nav-item"><a class="nav-link" href="/cart">Cart</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/change_password">Change Password</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
+                </ul>
+                {% else %}
+                <ul class="navbar-nav ms-auto mt-2">
+                    <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
                 </ul>
                 {% endif %}
             </div>

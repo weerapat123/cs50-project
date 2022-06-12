@@ -5,7 +5,6 @@ Register
 {% endblock %}
 
 {% block main %}
-{% if not is_registered %}
 <form action="/register" method="post">
     <div class="mb-3">
         <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username"
@@ -20,9 +19,4 @@ Register
     </div>
     <button class="btn btn-primary" type="submit">Register</button>
 </form>
-{% else %}
-<div>
-    <p class="registered-msg"><strong>You are registered!</strong></p>
-</div>
-{% endif %}
 {% endblock %}

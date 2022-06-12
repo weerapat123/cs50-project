@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-Item Lists
+History
 {% endblock %}
 
 {% block main %}
@@ -16,6 +16,7 @@ Item Lists
                 <th>Price</th>
                 <th>Image</th>
                 <th>Category</th>
+                <th>Process Datetime</th>
             </tr>
         </thead>
         <tbody>
@@ -31,6 +32,7 @@ Item Lists
                         src="{{ url_for('download_file', filename=item.image_name) }}" alt="{{ item.name }}">
                 </td>
                 <td class="text-capitalize">{{ item.category }}</td>
+                <td>{{ item.process_datetime }}</td>
             </tr>
             {% endfor %}
         </tbody>

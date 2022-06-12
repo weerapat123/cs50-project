@@ -8,7 +8,7 @@ from functools import wraps
 import re
 
 PATTERN = "^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&;:])[A-Za-z\d@$!%*#?&;:]{8,}$"
-ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png"]
+ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png", "webp"]
 
 
 def apology(message, code=400):

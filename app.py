@@ -1,5 +1,6 @@
 from genericpath import exists
 import os
+import math
 
 from logging import root
 from cs50 import SQL
@@ -44,6 +45,9 @@ ACTIVE = 1
 
 # Keys
 cart_key = "cart_item"
+
+# Pagination
+data_per_page = 12
 
 MB = 1024 * 1024
 
@@ -131,22 +135,23 @@ def after_request(response):
 @app.route("/")
 # @login_required
 def index():
-    # Mock up data
-    img_paths = ["plant1.jpg", "plant2.jpg", "plant3.jpg"]
-    items = []
-    for i, img in enumerate(img_paths):
-        item = {
-            "name": f"Plant {i+1}",
-            "price": (100.0 * (i + 1)) - 1,
-            "description": f"This is description of an item of plant {i+1}." * (i + 1),
-            "image_name": img,
-        }
-        items.append(item)
+    try:
+        page = int(request.args.get("page"))
+    except Exception as e:
+        page = 1
 
-    rows = db.execute(f"SELECT * FROM items")
-    items += rows
+    if page is None:
+        page = 1
 
-    pagination = {"current_page": 1, "total_page": 1}
+    items = db.execute(
+        "SELECT * FROM items LIMIT ? OFFSET ?",
+        data_per_page,
+        (page - 1) * data_per_page,
+    )
+
+    total_rows = db.execute("SELECT COUNT(*) as total FROM items")
+    total_page = math.ceil(total_rows[0]["total"] / 12)
+    pagination = {"current_page": page, "total_page": total_page}
     return render_template("index.html", items=items, pagination=pagination)
 
 

@@ -43,8 +43,12 @@ Home
                                 <div class="d-flex justify-content-between align-items-center">
                                     <p class="mb-0">{{ item.price | usd }}</p>
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">Add To
-                                            Cart</button>
+                                        <form action="/add_to_cart" method="post">
+                                            <input name="item_id" type="hidden" value={{ item.id }}>
+                                            <input name="quantity" type="hidden" value=1>
+                                            <button type="submit" class="btn btn-sm btn-outline-secondary">Add To
+                                                Cart</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>

@@ -50,7 +50,8 @@
                 {% endif %}
                 <ul class="navbar-nav ms-auto mt-2">
                     <li class="nav-item"><a class="nav-link" href="/backoffice">Backoffice</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/cart">Cart</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/cart">Cart ({{ session["cart_item"] | length }})</a>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="/change_password">Change Password</a></li>
                     <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
                 </ul>

@@ -28,6 +28,7 @@ from helpers import (
     is_password_valid,
     allowed_file,
 )
+from items import Item
 
 UPLOAD_FOLDER = "upload"
 DB_NAME = "database.db"
@@ -40,6 +41,9 @@ REMOVE = "remove"
 # Item status
 DELETED = 0
 ACTIVE = 1
+
+# Keys
+cart_key = "cart_item"
 
 MB = 1024 * 1024
 
@@ -422,6 +426,45 @@ def history():
     )
 
     return render_template("history.html", items=items)
+
+
+@app.route("/add_to_cart", methods=["POST"])
+@login_required
+def add_to_cart():
+    try:
+        item_id = request.form.get("item_id")
+        quantity = request.form.get("quantity")
+        if not item_id:
+            return apology("must provide item id")
+        elif not quantity:
+            return apology("must provide quantity")
+
+        rows = db.execute(
+            "SELECT * FROM items WHERE id = ? AND status = ?", item_id, ACTIVE
+        )
+        if len(rows) == 0:
+            return apology("item does not exist")
+
+        item = rows[0]
+        dict_items = {item_id: {"name": item["name"], "quantity": quantity}}
+
+        if cart_key in session:
+            print(f"cart items from session: {session[cart_key]}")
+            if item_id in session[cart_key]:
+                flash("This item is already in your cart")
+            else:
+                # add item to session
+                session[cart_key][item_id] = dict_items[item_id]
+                return redirect(request.referrer)
+        else:
+            session[cart_key] = dict_items
+            return redirect(request.referrer)
+
+    except Exception as e:
+        print(f"exception found: {e}")
+        return apology("somthing wrong", 500)
+
+    return redirect(request.referrer)
 
 
 if __name__ == "__main__":

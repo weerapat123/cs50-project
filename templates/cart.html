@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-List Items
+Cart
 {% endblock %}
 
 {% block main %}
@@ -15,9 +15,7 @@ List Items
                 <th>Price</th>
                 <th>Image</th>
                 <th>Category</th>
-                {% if items %}
-                <th></th>
-                {% endif %}
+                <th>Quantity</th>
             </tr>
         </thead>
         <tbody>
@@ -32,11 +30,14 @@ List Items
                         src="{{ url_for('download_file', filename=item.image_name) }}" alt="{{ item.name }}">
                 </td>
                 <td class="text-capitalize">{{ item.category }}</td>
+                <td>{{ item.quantity }}</td>
                 <td>
                     <div class="row g-3 justify-content-center">
-                        <form action="/backoffice/remove_item" class="col-auto" method="post">
+                        <form action="/remove_from_cart" class="col-auto" method="post">
                             <input name="item_id" type="hidden" value="{{ item.id }}">
-                            <button class="btn btn-danger" type="submit">Remove</button>
+                            <button class="btn btn-danger" type="submit">
+                                <i class="fa fa-trash"></i>
+                            </button>
                         </form>
                     </div>
                 </td>
@@ -44,6 +45,24 @@ List Items
             {% endfor %}
         </tbody>
     </table>
+    <div class="summary">
+        <div class="summary-content p-3">
+            <p class="summary-title fw-bolder">Summary</p>
+            <hr>
+            <div class="summary-items mx-3">
+                {% for item in items %}
+                <span class="text-start">{{ item.name }} &times;{{ item.quantity }}</span>
+                <span class="text-start">{{ (item.price * item.quantity) | usd }}</span>
+                {% endfor %}
+            </div>
+            <hr>
+            <div class="summary-items mx-3">
+                <span class="fw-bolder text-start">Total {{ items | length }} item{% if (items | length) > 1 %}s{%
+                    endif%}</span>
+                <span class="fw-bolder text-start">{{ total_price | usd }}</span>
+            </div>
+        </div>
+    </div>
     <!-- The Modal -->
     <div id="myModal" class="modal">
         <span class="close">&times;</span>

@@ -14,16 +14,16 @@ from flask import (
 )
 from flask_session import Session
 
-from tempfile import mkdtemp
-from sqlalchemy import desc
+# from tempfile import mkdtemp
+# from sqlalchemy import desc
 from werkzeug.security import check_password_hash, generate_password_hash
-from werkzeug.utils import secure_filename
+
+# from werkzeug.utils import secure_filename
 import uuid
 
 from helpers import (
     apology,
     login_required,
-    lookup,
     usd,
     is_password_valid,
     allowed_file,
@@ -145,7 +145,9 @@ def index():
 
     rows = db.execute(f"SELECT * FROM items")
     items += rows
-    return render_template("index.html", items=items)
+
+    pagination = {"current_page": 1, "total_page": 1}
+    return render_template("index.html", items=items, pagination=pagination)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -433,7 +435,8 @@ def history():
 def add_to_cart():
     try:
         item_id = request.form.get("item_id")
-        quantity = request.form.get("quantity")
+        quantity = int(request.form.get("quantity"))
+
         if not item_id:
             return apology("must provide item id")
         elif not quantity:
@@ -446,7 +449,7 @@ def add_to_cart():
             return apology("item does not exist")
 
         item = rows[0]
-        dict_items = {item_id: {"name": item["name"], "quantity": quantity}}
+        dict_items = {item_id: {"quantity": quantity}}
 
         if cart_key in session:
             print(f"cart items from session: {session[cart_key]}")
@@ -455,10 +458,59 @@ def add_to_cart():
             else:
                 # add item to session
                 session[cart_key][item_id] = dict_items[item_id]
+                flash("Item is successfully added into your cart")
                 return redirect(request.referrer)
         else:
             session[cart_key] = dict_items
+            flash("Item is successfully added into your cart")
             return redirect(request.referrer)
+
+    except Exception as e:
+        print(f"exception found: {e}")
+        return apology("somthing wrong", 500)
+
+    return redirect(request.referrer)
+
+
+@app.route("/cart")
+@login_required
+def cart():
+    cart_items = session[cart_key]
+
+    keys = tuple(cart_items.keys())
+    if len(keys) == 1:
+        keys = str(keys).replace(",", "")
+
+    items = db.execute(
+        f"SELECT * FROM items WHERE id IN {keys} AND status = ?",
+        ACTIVE,
+    )
+
+    total_price: float = 0
+    for i, item in enumerate(items):
+        id = item["id"]
+        q = cart_items[str(id)]["quantity"]
+        items[i]["quantity"] = q
+        total_price += item["price"] * q
+
+    return render_template("cart.html", items=items, total_price=total_price)
+
+
+@app.route("/remove_from_cart", methods=["POST"])
+@login_required
+def remove_from_cart():
+    try:
+        item_id = request.form.get("item_id")
+
+        if not item_id:
+            return apology("must provide item id")
+
+        if cart_key in session:
+            if item_id in session[cart_key]:
+                # del session[cart_key][item_id]
+                session[cart_key].pop(item_id, None)
+
+        flash("Item is successfully removed from your cart")
 
     except Exception as e:
         print(f"exception found: {e}")

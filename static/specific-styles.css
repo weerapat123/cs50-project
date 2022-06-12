@@ -136,3 +136,29 @@ label {
   text-decoration: none;
   cursor: pointer;
 }
+
+.remove-icon {
+  height: 12px;
+  width: 12px;
+}
+
+.summary {
+  display: flex;
+  justify-content: end;
+  font-family: "Rubik", sans-serif;
+}
+
+.summary-content {
+  width: 18rem;
+  border: 1px solid #dfe0e1;
+}
+
+.summary-items {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  /* justify-content: space-between; */
+}
+
+.summary-items li:last-child {
+  margin-top: 1rem;
+}

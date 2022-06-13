@@ -2,7 +2,6 @@ from genericpath import exists
 import os
 import math
 
-from logging import root
 from cs50 import SQL
 from flask import (
     Flask,
@@ -15,11 +14,7 @@ from flask import (
 )
 from flask_session import Session
 
-# from tempfile import mkdtemp
-# from sqlalchemy import desc
 from werkzeug.security import check_password_hash, generate_password_hash
-
-# from werkzeug.utils import secure_filename
 import uuid
 
 from helpers import (
@@ -29,7 +24,6 @@ from helpers import (
     is_password_valid,
     allowed_file,
 )
-from items import Item
 
 UPLOAD_FOLDER = "upload"
 DB_NAME = "database.db"
@@ -119,10 +113,10 @@ def init_upload():
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
 
-# # Make sure API key is set
-# if not os.environ.get("API_KEY"):
-#     raise RuntimeError("API_KEY not set")
-
+@app.before_request
+def log_request_info():
+    if request.method == "POST":
+        app.logger.debug('request body: %s', request.get_data())
 
 @app.after_request
 def after_request(response):
@@ -206,7 +200,6 @@ def logout():
     return redirect("/")
 
 
-# TODO: For debug. Remove later. Only manual register needed!
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
@@ -454,11 +447,10 @@ def add_to_cart():
         if len(rows) == 0:
             return apology("item does not exist")
 
-        item = rows[0]
         dict_items = {item_id: {"quantity": quantity}}
 
         if cart_key in session:
-            print(f"cart items from session: {session[cart_key]}")
+            app.logger.debug(f"cart items from session: {session[cart_key]}")
             if item_id in session[cart_key]:
                 flash("This item is already in your cart")
             else:
@@ -472,7 +464,7 @@ def add_to_cart():
             return redirect(request.referrer)
 
     except Exception as e:
-        print(f"exception found: {e}")
+        app.logger.error(f"exception found: {e}")
         return apology("somthing wrong", 500)
 
     return redirect(request.referrer)
@@ -482,6 +474,7 @@ def add_to_cart():
 @login_required
 def cart():
     cart_items = session[cart_key]
+    app.logger.debug(f"cart items: {cart_items}")
 
     keys = tuple(cart_items.keys())
     if len(keys) == 1:
@@ -519,7 +512,7 @@ def remove_from_cart():
         flash("Item is successfully removed from your cart")
 
     except Exception as e:
-        print(f"exception found: {e}")
+        app.logger.error(f"exception found: {e}")
         return apology("somthing wrong", 500)
 
     return redirect(request.referrer)
@@ -529,7 +522,7 @@ def remove_from_cart():
 @login_required
 def checkout():
     cart_items = session[cart_key]
-    print(f"checkout cart items: {cart_items}")
+    app.logger.debug(f"checkout cart items: {cart_items}")
 
     for item_id, item in cart_items.items():
         db.execute(

@@ -33,8 +33,8 @@ from items import Item
 
 UPLOAD_FOLDER = "upload"
 DB_NAME = "database.db"
-CATEGORIES = ["plants", "others"]
-
+CATEGORIES = ["plants", "others", "food", "pets"]
+CATEGORIES.sort()
 # Item process
 ADD = "add"
 REMOVE = "remove"
@@ -47,7 +47,7 @@ ACTIVE = 1
 cart_key = "cart_item"
 
 # Pagination
-data_per_page = 12
+data_per_page = 9
 
 MB = 1024 * 1024
 
@@ -98,6 +98,7 @@ def init_db():
     category TEXT NOT NULL,
     owner_id INTEGER NOT NULL,
     status INTEGER DEFAULT 1 NOT NULL,
+    sold_number INTEGER DEFAULT 0 NOT NULL,
     FOREIGN KEY (owner_id) REFERENCES users (id))"""
     )
     db.execute("CREATE INDEX IF NOT EXISTS items_list ON items (owner_id, status)")
@@ -140,7 +141,7 @@ def index():
     except Exception as e:
         page = 1
 
-    if page is None:
+    if page is None or page < 1:
         page = 1
 
     items = db.execute(
@@ -522,6 +523,24 @@ def remove_from_cart():
         return apology("somthing wrong", 500)
 
     return redirect(request.referrer)
+
+
+@app.route("/checkout", methods=["POST"])
+@login_required
+def checkout():
+    cart_items = session[cart_key]
+    print(f"checkout cart items: {cart_items}")
+
+    for item_id, item in cart_items.items():
+        db.execute(
+            "UPDATE items SET sold_number = sold_number + ? WHERE id = ?",
+            item["quantity"],
+            item_id,
+        )
+
+    session.pop(cart_key)
+    flash("You ahve successfully checkouted your cart")
+    return redirect("/")
 
 
 if __name__ == "__main__":

@@ -62,6 +62,9 @@ Cart
                 <span class="fw-bolder text-start">{{ total_price | usd }}</span>
             </div>
         </div>
+        <form action="/checkout" method="post">
+            <button class="btn btn-warning">Check Out</button>
+        </form>
     </div>
     <!-- The Modal -->
     <div id="myModal" class="modal">

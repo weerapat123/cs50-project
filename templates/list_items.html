@@ -9,12 +9,13 @@ List Items
     <table class="table table-bordered table-hover">
         <thead class="table-light">
             <tr>
-                <th>No.</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Image</th>
-                <th>Category</th>
+                <th class="align-middle">No.</th>
+                <th class="align-middle">Name</th>
+                <th class="align-middle">Description</th>
+                <th class="align-middle">Price</th>
+                <th class="align-middle">Image</th>
+                <th class="align-middle">Category</th>
+                <th class="align-middle">Sold Number</th>
                 {% if items %}
                 <th></th>
                 {% endif %}
@@ -32,6 +33,7 @@ List Items
                         src="{{ url_for('download_file', filename=item.image_name) }}" alt="{{ item.name }}">
                 </td>
                 <td class="text-capitalize">{{ item.category }}</td>
+                <td>{{ item.sold_number }}</td>
                 <td>
                     <div class="row g-3 justify-content-center">
                         <form action="/backoffice/remove_item" class="col-auto" method="post">

@@ -2,6 +2,10 @@ html {
   scroll-behavior: smooth;
 }
 
+body {
+  font-family: "Rubik", sans-serif;
+}
+
 /* Size for brand */
 nav .navbar-brand {
   font-size: xx-large;

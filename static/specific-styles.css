@@ -144,8 +144,11 @@ label {
 
 .summary {
   display: flex;
-  justify-content: end;
-  font-family: "Rubik", sans-serif;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
+  /* justify-content: end; */
+  /* font-family: "Rubik", sans-serif; */
 }
 
 .summary-content {

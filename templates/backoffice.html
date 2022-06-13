@@ -6,6 +6,20 @@ Backoffice
 
 {% block main %}
 <div>
-    <p><strong>Welcome to Monkey Market backoffice!</strong></p>
+    <div class="blinkers mb-3">
+        <div class="spinner-grow text-primary me-3" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="spinner-grow text-danger me-3" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="spinner-grow text-warning me-3" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="spinner-grow text-success me-3" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    <p class="fs-3">Welcome to Monkey Market backoffice!</p>
 </div>
 {% endblock %}

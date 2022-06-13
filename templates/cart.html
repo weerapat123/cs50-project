@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Cart
+{% endblock %}
+
+{% block main %}
+<div class="mx-auto table-container">
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>No.</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Image</th>
+                <th>Category</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ loop.index0 + 1 }}</td>
+                <td class="text-start">{{ item.name }}</td>
+                <td class="text-start">{{ item.description }}</td>
+                <td class="text-start">{{ item.price | usd }}</td>
+                <td>
+                    <img class="img-thumbnail item-preview"
+                        src="{{ url_for('download_file', filename=item.image_name) }}" alt="{{ item.name }}">
+                </td>
+                <td class="text-capitalize">{{ item.category }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>
+                    <div class="row g-3 justify-content-center">
+                        <form action="/remove_from_cart" class="col-auto" method="post">
+                            <input name="item_id" type="hidden" value="{{ item.id }}">
+                            <button class="btn btn-danger" type="submit">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="summary">
+        <div class="summary-content p-3">
+            <p class="summary-title fw-bolder">Summary</p>
+            <hr>
+            <div class="summary-items mx-3">
+                {% for item in items %}
+                <span class="text-start">{{ item.name }} &times;{{ item.quantity }}</span>
+                <span class="text-start">{{ (item.price * item.quantity) | usd }}</span>
+                {% endfor %}
+            </div>
+            <hr>
+            <div class="summary-items mx-3">
+                <span class="fw-bolder text-start">Total {{ items | length }} item{% if (items | length) > 1 %}s{%
+                    endif%}</span>
+                <span class="fw-bolder text-start">{{ total_price | usd }}</span>
+            </div>
+        </div>
+        <form action="/checkout" method="post">
+            <button class="btn btn-warning">Check Out</button>
+        </form>
+    </div>
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="img01">
+        <div id="caption"></div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    // Get the modal
+    var modal = document.getElementById("myModal");
+
+    // Get the image and insert it inside the modal - use its "alt" text as a caption
+    var modalImg = document.getElementById("img01");
+    var captionText = document.getElementById("caption");
+
+    document.querySelectorAll(".item-preview").forEach(function (img) {
+        img.onclick = function () {
+            modal.style.display = "block";
+            modalImg.src = this.src;
+            captionText.innerHTML = this.alt;
+        }
+    })
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+</script>
+{% endblock %}

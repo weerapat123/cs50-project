@@ -26,6 +26,9 @@ import pymongo
 import config
 import datetime
 from bson.objectid import ObjectId
+from aws import AWSService
+
+s3 = AWSService()
 
 app = Flask(__name__)
 
@@ -340,7 +343,9 @@ def add_item():
             ext = file.filename.rsplit(".", 1)[-1]
             filename = f"image_{category}_{uuid.uuid4()}.{ext}"
             # filename = secure_filename(filename)
-            file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+            file.save(path)
+            s3.upload_file(path, filename)
 
         user_id = session["user_id"]
         app.logger.debug(f"[add_item] user_id: {user_id}")
@@ -376,6 +381,10 @@ def add_item():
 
 @app.route("/uploads/<path:filename>")
 def download_file(filename):
+    path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+    if not os.path.exists(path):
+        s3.download_file(filename, path)
+
     return send_from_directory(UPLOAD_FOLDER, filename)
 
 

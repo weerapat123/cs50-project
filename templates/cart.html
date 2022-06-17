@@ -34,7 +34,7 @@ Cart
                 <td>
                     <div class="row g-3 justify-content-center">
                         <form action="/remove_from_cart" class="col-auto" method="post">
-                            <input name="item_id" type="hidden" value="{{ item.id }}">
+                            <input name="item_id" type="hidden" value="{{ item._id }}">
                             <button class="btn btn-danger" type="submit">
                                 <i class="fa fa-trash"></i>
                             </button>
@@ -45,6 +45,7 @@ Cart
             {% endfor %}
         </tbody>
     </table>
+    {% if items %}
     <div class="summary">
         <div class="summary-content p-3">
             <p class="summary-title fw-bolder">Summary</p>
@@ -66,6 +67,7 @@ Cart
             <button class="btn btn-warning">Check Out</button>
         </form>
     </div>
+    {% endif %}
     <!-- The Modal -->
     <div id="myModal" class="modal">
         <span class="close">&times;</span>

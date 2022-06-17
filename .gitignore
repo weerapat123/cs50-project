@@ -131,3 +131,4 @@ dmypy.json
 flask_session/
 *.db
 upload/
+test.py

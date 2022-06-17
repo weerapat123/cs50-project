@@ -37,7 +37,7 @@ List Items
                 <td>
                     <div class="row g-3 justify-content-center">
                         <form action="/backoffice/remove_item" class="col-auto" method="post">
-                            <input name="item_id" type="hidden" value="{{ item.id }}">
+                            <input name="item_id" type="hidden" value="{{ item._id }}">
                             <button class="btn btn-danger" type="submit">Remove</button>
                         </form>
                     </div>

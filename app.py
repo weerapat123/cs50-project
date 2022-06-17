@@ -110,7 +110,7 @@ def init_db():
 
 
 def init_upload():
-    os.mkdir(f"./{app.config['UPLOAD_FOLDER']}", exist_ok=True)
+    os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
 
 @app.before_request

@@ -9,6 +9,7 @@ from flask import (
 )
 from flask_session import Session
 
+import werkzeug.exceptions
 from werkzeug.security import check_password_hash, generate_password_hash
 import uuid
 import os
@@ -30,7 +31,10 @@ app = Flask(__name__)
 
 # Connect to the database
 client = None
-client = pymongo.MongoClient(config.MONGODB_URI)
+try:
+    client = pymongo.MongoClient(config.MONGODB_URI)
+except Exception as e:
+    raise RuntimeError(e)
 
 db = client[config.DATABASE]
 users_coll = db[config.COLLECTIONS.users]
@@ -38,7 +42,7 @@ items_coll = db[config.COLLECTIONS.items]
 histories_coll = db[config.COLLECTIONS.histories]
 
 UPLOAD_FOLDER = "upload"
-CATEGORIES = ["plant", "other", "food", "pet", "accessory"]
+CATEGORIES = ["plant", "other", "food", "pet", "accessory", "cloth", "art"]
 CATEGORIES.sort()
 
 # Item process
@@ -121,6 +125,12 @@ def after_request(response):
     response.headers["Expires"] = 0
     response.headers["Pragma"] = "no-cache"
     return response
+
+
+@app.errorhandler(werkzeug.exceptions.RequestEntityTooLarge)
+def handle_bad_request(e):
+    flash("Image is too big", "error")
+    return redirect("/backoffice/add_item")
 
 
 @app.route("/")
@@ -352,7 +362,7 @@ def add_item():
         histories_coll.insert_one(
             {
                 "process_type": ADD,
-                "process_datetime": datetime.datetime.now(),
+                "process_datetime": datetime.datetime.utcnow(),
                 "item_id": item_id,
             }
         )
@@ -394,7 +404,7 @@ def remove_item():
     histories_coll.insert_one(
         {
             "process_type": REMOVE,
-            "process_datetime": datetime.datetime.now(),
+            "process_datetime": datetime.datetime.utcnow(),
             "item_id": ObjectId(item_id),
         }
     )

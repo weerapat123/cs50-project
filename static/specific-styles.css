@@ -165,3 +165,8 @@ label {
 .summary-items li:last-child {
   margin-top: 1rem;
 }
+
+.image-size {
+  color: rgb(218, 58, 58);
+  font-size: 0.9rem;
+}

@@ -60,6 +60,7 @@ cart_key = "cart_item"
 data_per_page = 9
 
 MB = 1024 * 1024
+IMAGE_SIZE = 3
 
 # Configure application
 # Ensure templates are auto-reloaded
@@ -69,7 +70,7 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 # Set maximum content length
-app.config["MAX_CONTENT_LENGTH"] = 2 * MB
+app.config["MAX_CONTENT_LENGTH"] = IMAGE_SIZE * MB
 
 # Custom filter
 app.jinja_env.filters["usd"] = usd
@@ -368,9 +369,9 @@ def add_item():
         )
 
         flash("You have successfully added an item!")
-        return render_template("add_item.html", categories=CATEGORIES)
+        return redirect(request.referrer)
 
-    return render_template("add_item.html", categories=CATEGORIES)
+    return render_template("add_item.html", categories=CATEGORIES, img_size=IMAGE_SIZE)
 
 
 @app.route("/uploads/<path:filename>")

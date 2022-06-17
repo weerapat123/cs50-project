@@ -550,7 +550,7 @@ if __name__ == "__main__":
     try:
         init_db()
         init_upload()
-        app.run(debug=True)
+        app.run()
     except Exception as e:
         print(f"Exception found: {e}")
     finally:

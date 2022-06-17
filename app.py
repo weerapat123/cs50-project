@@ -556,11 +556,12 @@ def checkout():
     return redirect("/")
 
 
+init_db()
+init_upload()
+
 if __name__ == "__main__":
     app.logger.info("app is starting")
     try:
-        init_db()
-        init_upload()
         app.run()
     except Exception as e:
         print(f"Exception found: {e}")

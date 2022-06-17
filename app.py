@@ -110,7 +110,7 @@ def init_db():
 
 
 def init_upload():
-    os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+    os.mkdir(f"./{app.config['UPLOAD_FOLDER']}", exist_ok=True)
 
 
 @app.before_request
@@ -557,6 +557,7 @@ def checkout():
 
 
 if __name__ == "__main__":
+    app.logger.info("app is starting")
     try:
         init_db()
         init_upload()

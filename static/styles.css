@@ -24,3 +24,9 @@ nav .navbar-brand .yellow {
 nav .navbar-brand .green {
   color: #2e944b;
 }
+
+.logo {
+  height: 5rem;
+  border-radius: 9px;
+  box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.3);
+}

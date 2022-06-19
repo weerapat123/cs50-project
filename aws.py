@@ -1,8 +1,8 @@
 import boto3
-
+import config
 
 class AWSService:
-    bucket = "monkey-market-bucket"
+    bucket = config.AWS_BUCKET
 
     def __init__(self):
         self.s3 = boto3.client("s3")

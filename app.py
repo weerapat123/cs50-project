@@ -25,12 +25,20 @@ from helpers import (
 import pymongo
 import config
 import datetime
+import logging
 from bson.objectid import ObjectId
 from aws import AWSService
 
 s3 = AWSService()
 
 app = Flask(__name__)
+
+logging.basicConfig(level=logging.DEBUG)
+
+if config.AWS_ENABLE:
+    logging.info("aws service is enabled")
+else:
+    logging.info("aws service is disabled")
 
 # Connect to the database
 client = None
@@ -139,13 +147,14 @@ def handle_bad_request(e):
 
 @app.route("/")
 def index():
-    try:
-        page = int(request.args.get("page"))
-    except Exception as e:
-        app.logger.debug(f"page error {e}")
-        page = 1
-
-    if page is None or page < 1:
+    page = request.args.get("page")
+    if page:
+        try:
+            page = int(page)
+        except Exception as e:
+            app.logger.debug(f"page error {e}")
+            page = 1
+    else:
         page = 1
 
     cursor = (
@@ -297,7 +306,7 @@ def change_password():
         if res.modified_count == 0:
             return apology("internal server error", 500)
 
-        flash("Your password has been changed.")
+        flash("Your password has been changed")
         return redirect("/")
 
     return render_template("change_password.html")
@@ -345,7 +354,8 @@ def add_item():
             # filename = secure_filename(filename)
             path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
             file.save(path)
-            s3.upload_file(path, filename)
+            if config.AWS_ENABLE:
+                s3.upload_file(path, filename)
 
         user_id = session["user_id"]
         app.logger.debug(f"[add_item] user_id: {user_id}")
@@ -382,7 +392,7 @@ def add_item():
 @app.route("/uploads/<path:filename>")
 def download_file(filename):
     path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-    if not os.path.exists(path):
+    if config.AWS_ENABLE and not os.path.exists(path):
         s3.download_file(filename, path)
 
     return send_from_directory(UPLOAD_FOLDER, filename)
@@ -552,7 +562,7 @@ def checkout():
     items_coll.bulk_write(bulk_req)
 
     session.pop(cart_key)
-    flash("You ahve successfully checkouted your cart")
+    flash("You have successfully checkouted your cart")
     return redirect("/")
 
 
@@ -562,7 +572,7 @@ init_upload()
 if __name__ == "__main__":
     app.logger.info("app is starting")
     try:
-        app.run()
+        app.run(debug=True)
     except Exception as e:
         print(f"Exception found: {e}")
     finally:

@@ -43,7 +43,6 @@ else:
 # Connect to the database
 client = None
 try:
-    logging.debug(f"mongodb uri: {config.MONGODB_URI}")
     client = pymongo.MongoClient(config.MONGODB_URI)
 except Exception as e:
     raise RuntimeError(e)

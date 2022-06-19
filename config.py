@@ -18,7 +18,7 @@ MONGODB_URI = os.environ.get("MONGODB_URI")
 if not username or not password or not MONGODB_URI:
     MONGODB_URI = "mongodb://localhost:27017/"
 else:
-    MONGODB_URI.replace("<username>", quote_plus(username)).replace(
+    MONGODB_URI = MONGODB_URI.replace("<username>", quote_plus(username)).replace(
         "<password>", quote_plus(password)
     )
 

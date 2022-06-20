@@ -122,11 +122,17 @@ def init_upload():
 
 
 def get_categories() -> list:
+    categories = categories_coll.find().sort("category")
+    return [cat.get("category") for cat in categories]
+
+
+def init():
     global CATEGORIES
+
+    init_db()
+    init_upload()
     if not CATEGORIES:
-        categories = categories_coll.find().sort({"category": 1})
-        return [cat.get("category") for cat in categories]
-    return []
+        CATEGORIES = get_categories()
 
 
 @app.before_request
@@ -574,9 +580,7 @@ def checkout():
     return redirect("/")
 
 
-init_db()
-init_upload()
-get_categories()
+init()
 
 if __name__ == "__main__":
     app.logger.info("app is starting")

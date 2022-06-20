@@ -28,3 +28,6 @@ COLLECTIONS = Collections()
 
 AWS_ENABLE = bool(os.environ.get("AWS_ENABLE", False))
 AWS_BUCKET = os.environ.get("AWS_BUCKET")
+
+# os.urandom(24).hex()
+SESSION_SECRET_KEY = os.environ.get("SESSION_SECRET_KEY")

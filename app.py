@@ -89,8 +89,7 @@ app.jinja_env.filters["usd"] = usd
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-# os.urandom(24).hex()
-app.config["SECRET_KEY"] = "6ddd1effd35eeee6661c299a749377d293cf9921c8143dfd"
+app.config["SECRET_KEY"] = config.SESSION_SECRET_KEY
 Session(app)
 
 

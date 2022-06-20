@@ -1,6 +1,6 @@
 # ShopMi
 
-#### Video Demo: [Here](https://google.com/)
+#### Video Demo: [Here](https://youtu.be/5w9iKSELB4k)
 
 #### Description:
 

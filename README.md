@@ -7,7 +7,7 @@
 This project is implemented in **Python** with **MongoDB** as database and **S3 AWS** as image storage.
 
 
-> **ShopMi** is a place where you can buy any stuffs you like or **sell them!**<br>
+> **ShopMi** is an e-market, a place where you can buy stuffs or even **sell them!**<br>
 > [Try now!](https://shopmi.herokuapp.com/) 
 
 <br>

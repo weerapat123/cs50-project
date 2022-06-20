@@ -7,6 +7,7 @@ class Collections:
         self.users = "users"
         self.items = "items"
         self.histories = "histories"
+        self.categories = "categories"
 
 
 # Database configuration

@@ -12,4 +12,6 @@ This project is implemented in **Python** with **MongoDB** as database and **S3 
 
 <br>
 
+![ShopMi logo](./static/shopmi.PNG)
+
 **Weerapat Treevichien, Thailand**

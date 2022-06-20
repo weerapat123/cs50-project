@@ -576,7 +576,7 @@ def checkout():
     items_coll.bulk_write(bulk_req)
 
     session.pop(cart_key)
-    flash("You have successfully checkouted your cart")
+    flash("You have successfully checked out")
     return redirect("/")
 
 

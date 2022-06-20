@@ -51,10 +51,10 @@ db = client[config.DATABASE]
 users_coll = db[config.COLLECTIONS.users]
 items_coll = db[config.COLLECTIONS.items]
 histories_coll = db[config.COLLECTIONS.histories]
+categories_coll = db[config.COLLECTIONS.categories]
 
 UPLOAD_FOLDER = "upload"
-CATEGORIES = ["plant", "other", "food", "pet", "accessory", "cloth", "art"]
-CATEGORIES.sort()
+CATEGORIES = []
 
 # Item process
 ADD = "add"
@@ -119,6 +119,20 @@ def init_db():
 
 def init_upload():
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+
+
+def get_categories() -> list:
+    categories = categories_coll.find().sort("category")
+    return [cat.get("category") for cat in categories]
+
+
+def init():
+    global CATEGORIES
+
+    init_db()
+    init_upload()
+    if not CATEGORIES:
+        CATEGORIES = get_categories()
 
 
 @app.before_request
@@ -566,8 +580,7 @@ def checkout():
     return redirect("/")
 
 
-init_db()
-init_upload()
+init()
 
 if __name__ == "__main__":
     app.logger.info("app is starting")

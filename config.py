@@ -7,17 +7,21 @@ class Collections:
         self.users = "users"
         self.items = "items"
         self.histories = "histories"
+        self.categories = "categories"
 
 
 # Database configuration
 # mongodb://localhost:27017/
-username = os.environ.get("MONGODB_USERNAME", "")
-password = os.environ.get("MONGODB_PASSWORD", "")
+username = os.environ.get("MONGODB_USERNAME")
+password = os.environ.get("MONGODB_PASSWORD")
+MONGODB_URI = os.environ.get("MONGODB_URI")
 
-if not username or not password:
+if not username or not password or not MONGODB_URI:
     MONGODB_URI = "mongodb://localhost:27017/"
 else:
-    MONGODB_URI = f"mongodb+srv://{quote_plus(username)}:{quote_plus(password)}@my-cluster.lkefc.mongodb.net/?retryWrites=true&w=majority"
+    MONGODB_URI = MONGODB_URI.replace("<username>", quote_plus(username)).replace(
+        "<password>", quote_plus(password)
+    )
 
 DATABASE = "shopmi"
 COLLECTIONS = Collections()

@@ -27,4 +27,4 @@ DATABASE = "shopmi"
 COLLECTIONS = Collections()
 
 AWS_ENABLE = bool(os.environ.get("AWS_ENABLE", False))
-AWS_BUCKET = os.environ.get("AWS_BUCKET", "shopmi-bucket")
+AWS_BUCKET = os.environ.get("AWS_BUCKET")
